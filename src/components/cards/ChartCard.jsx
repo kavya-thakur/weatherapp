@@ -23,7 +23,7 @@ const ChartCard = ({ title, children, span = "", delay = "0ms", data }) => {
       <div className="flex-1 w-full relative h-[260px] overflow-x-auto md:overflow-hidden no-scrollbar">
         {hasData ? (
           <div
-            className="h-full w-full min-w-[600px] md:min-w-0 touch-pan-y outline-none"
+            className="h-full w-full min-w-[600px] md:min-w-0  outline-none"
             style={{ WebkitTapHighlightColor: "transparent" }}
           >
             {children}
