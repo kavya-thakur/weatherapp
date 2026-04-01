@@ -20,16 +20,11 @@ const ChartCard = ({ title, children, span = "", delay = "0ms", data }) => {
       </div>
 
       {/* Chart */}
-      <div
-        className={`flex-1 w-full relative h-[260px] no-scrollbar ${
-          isInteracting ? "overflow-x-hidden" : "overflow-x-auto"
-        }`}
-      >
+      <div className="flex-1 w-full relative h-[260px] overflow-x-auto md:overflow-hidden no-scrollbar">
         {hasData ? (
           <div
-            className="h-full w-full min-w-[600px] md:min-w-0 outline-none focus:outline-none active:outline-none"
-            onTouchStart={() => setIsInteracting(true)}
-            onTouchEnd={() => setIsInteracting(false)}
+            className="h-full w-full min-w-[600px] md:min-w-0 touch-pan-y outline-none"
+            style={{ WebkitTapHighlightColor: "transparent" }}
           >
             {children}
           </div>
