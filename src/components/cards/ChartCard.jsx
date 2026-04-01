@@ -1,6 +1,8 @@
 import React from "react";
 
 const ChartCard = ({ title, children, span = "", delay = "0ms", data }) => {
+  const hasData = data && data.length > 0;
+
   return (
     <div
       style={{ animationDelay: delay }}
