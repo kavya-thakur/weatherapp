@@ -39,7 +39,7 @@ const HeroCard = ({
     }
   };
 
-  // YOUR LOGIC - UNCHANGED
+
   const metrics = [
     {
       label: "Humidity",
