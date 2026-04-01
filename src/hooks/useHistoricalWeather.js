@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import dayjs from "dayjs";
-import { fetchWeatherRange } from "../services/api";
+import { fetchWeatherRange, fetchAirQuality } from "../services/api";
 
 export const useHistoricalWeather = (coords) => {
   const [startDate, setStartDate] = useState(
@@ -20,7 +20,10 @@ export const useHistoricalWeather = (coords) => {
   );
 
   useEffect(() => {
-    if (!memoCoords.lat || !memoCoords.lon) return;
+    if (!memoCoords.lat || !memoCoords.lon) {
+      setLoading(true);
+      return;
+    }
 
     if (dayjs(endDate).isAfter(dayjs(startDate).add(2, "year"))) {
       setError("Maximum range is 2 years");
@@ -33,14 +36,14 @@ export const useHistoricalWeather = (coords) => {
         setLoading(true);
         setError(null);
 
-        const res = await fetchWeatherRange(
-          memoCoords.lat,
-          memoCoords.lon,
-          startDate,
-          endDate,
-        );
+        // ✅ FETCH BOTH (NO BREAKING CHANGE)
+        const [weatherRes, airRes] = await Promise.all([
+          fetchWeatherRange(memoCoords.lat, memoCoords.lon, startDate, endDate),
+          fetchAirQuality(memoCoords.lat, memoCoords.lon),
+        ]);
 
-        setData(res);
+        // ✅ MERGE
+        setData({ ...weatherRes, air: airRes });
       } catch {
         setError("Failed to load historical data");
         setData(null);
@@ -59,6 +62,10 @@ export const useHistoricalWeather = (coords) => {
       const max = data.daily.temperature_2m_max?.[i] ?? 0;
       const min = data.daily.temperature_2m_min?.[i] ?? 0;
 
+      // ✅ SIMPLE PM MAPPING (STABLE, NO BUG)
+      const pm10 = data.air?.hourly?.pm10?.[i * 24] ?? 0;
+      const pm25 = data.air?.hourly?.pm2_5?.[i * 24] ?? 0;
+
       return {
         date: date.slice(5),
         maxTemp: max,
@@ -66,6 +73,10 @@ export const useHistoricalWeather = (coords) => {
         meanTemp: (max + min) / 2,
         precipitation: data.daily.precipitation_sum?.[i] ?? 0,
         wind: data.daily.wind_speed_10m_max?.[i] ?? 0,
+        pm10,
+        pm25,
+        sunrise: data.daily.sunrise?.[i],
+        sunset: data.daily.sunset?.[i],
       };
     });
   }, [data]);

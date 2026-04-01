@@ -10,23 +10,29 @@ import WeatherSkeleton from "../components/WeatherSkeleton";
 
 const CurrentWeather = () => {
   const { coords, loading, error } = useLocation();
+  const [unit, setUnit] = useState("C");
   const [selectedDate, setSelectedDate] = useState(
     dayjs().format("YYYY-MM-DD"),
   );
-
-  const { data, loading: weatherLoading } = useWeatherData(
-    coords,
-    selectedDate,
-  );
+  const {
+    data,
+    loading: weatherLoading,
+    error: weatherError,
+  } = useWeatherData(coords, selectedDate);
   const logic = useCurrentWeatherLogic(data, selectedDate);
 
-  if (loading || weatherLoading || (!data && !error))
-    return <WeatherSkeleton />;
+  if (loading || weatherLoading) return <WeatherSkeleton />;
 
-  if (error)
+  if (error || weatherError)
     return (
-      <div className="p-20 text-center text-red-500 font-medium bg-red-50/50 rounded-[3rem] border border-red-100 m-4">
-        {error}
+      <div className="p-20 text-center text-red-500 font-medium bg-red-50/50 rounded-[3rem] border border-red-100 m-4 space-y-4">
+        <p>{error || weatherError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-bold"
+        >
+          Retry
+        </button>
       </div>
     );
 
@@ -38,6 +44,10 @@ const CurrentWeather = () => {
         {...logic}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
+        air={data.air}
+        unit={unit}
+        setUnit={setUnit}
+        daily={data.daily}
       />
 
       <div className="pt-4">
@@ -51,6 +61,7 @@ const CurrentWeather = () => {
         <WeatherCharts
           data={logic.filteredHourlyData}
           isToday={logic.isToday}
+          unit={unit}
         />
       </div>
     </div>

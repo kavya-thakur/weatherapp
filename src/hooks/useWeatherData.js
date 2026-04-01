@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+
 import {
   fetchWeather,
   fetchWeatherByDate,
@@ -10,13 +12,12 @@ export const useWeatherData = (coords, selectedDate) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Use a string key for the coordinates so the object reference doesn't break the chart
   const coordKey = coords ? `${coords.lat},${coords.lon}` : null;
+  const today = dayjs().format("YYYY-MM-DD");
 
   useEffect(() => {
     if (!coordKey || !selectedDate) return;
 
-    const today = new Date().toISOString().split("T")[0];
     const [lat, lon] = coordKey.split(",");
 
     const load = async () => {
@@ -24,8 +25,17 @@ export const useWeatherData = (coords, selectedDate) => {
         setLoading(true);
         setError(null);
 
+        const isToday = dayjs(selectedDate).isSame(dayjs(), "day");
+        const isFuture = dayjs(selectedDate).isAfter(dayjs(), "day");
+
+        if (isFuture) {
+          setError("Future dates are not supported");
+          setData(null);
+          return;
+        }
+
         const [weatherRes, airRes] = await Promise.all([
-          selectedDate === today
+          isToday
             ? fetchWeather(lat, lon)
             : fetchWeatherByDate(lat, lon, selectedDate),
           fetchAirQuality(lat, lon),
@@ -40,7 +50,6 @@ export const useWeatherData = (coords, selectedDate) => {
     };
 
     load();
-    // Dependency is now a string, NOT an object. This stops the snap.
   }, [coordKey, selectedDate]);
 
   return { data, loading, error };
