@@ -1,3 +1,105 @@
+// import {
+//   LineChart,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   Brush,
+//   ResponsiveContainer,
+//   Legend,
+//   CartesianGrid,
+// } from "recharts";
+
+// const BaseChart = ({ data, lines }) => {
+//   const xKey = data?.[0]?.time ? "time" : "date";
+
+//   return (
+//     <div className="w-full h-full min-h-[250px]">
+//       <ResponsiveContainer width="100%" height="100%">
+//         <LineChart
+//           data={data}
+//           margin={{ top: 10, right: 20, left: -10, bottom: 10 }}
+//         >
+//           <CartesianGrid
+//             vertical={false}
+//             stroke="#f1f5f9"
+//             strokeDasharray="3 3"
+//           />
+
+//           <XAxis
+//             dataKey={xKey}
+//             tick={{ fontSize: 10, fill: "#94a3b8" }}
+//             axisLine={false}
+//             tickLine={false}
+//             interval="preserveStartEnd"
+//             dy={10}
+//           />
+
+//           <YAxis
+//             tick={{ fontSize: 10, fill: "#94a3b8" }}
+//             axisLine={false}
+//             tickLine={false}
+//             width={35}
+//           />
+
+//           <Tooltip
+//             shared={false}
+//             isAnimationActive={false}
+//             cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }}
+//             contentStyle={{
+//               borderRadius: "12px",
+//               border: "none",
+//               boxShadow: "0 10px 20px rgba(0,0,0,0.08)",
+//               fontSize: "12px",
+//             }}
+//           />
+
+//           <Legend
+//             verticalAlign="top"
+//             align="right"
+//             iconType="circle"
+//             wrapperStyle={{
+//               fontSize: "10px",
+//               textTransform: "uppercase",
+//               letterSpacing: "0.05em",
+//               paddingBottom: "20px",
+//             }}
+//           />
+
+//           {lines.map((line, index) => (
+//             <Line
+//               key={line.dataKey}
+//               type="monotone"
+//               dataKey={line.dataKey}
+//               strokeWidth={2.5}
+//               dot={false}
+//               activeDot={{
+//                 r: 4,
+//                 strokeWidth: 0,
+//                 fill: line.stroke,
+//               }}
+//               stroke={line.stroke || (index === 0 ? "#0f172a" : "#3b82f6")}
+//               name={line.name || line.dataKey}
+//             />
+//           ))}
+
+//           <Brush
+//             dataKey={xKey}
+//             height={28}
+//             stroke="#94a3b8"
+//             fill="#f8fafc"
+//             travellerWidth={12}
+//             tickFormatter={() => ""}
+//           />
+//         </LineChart>
+//       </ResponsiveContainer>
+//     </div>
+//   );
+// };
+
+// export default BaseChart;
+
+import React, { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -11,82 +113,116 @@ import {
 } from "recharts";
 
 const BaseChart = ({ data, lines }) => {
-  const xKey = data?.[0]?.time ? "time" : "date";
+  // Memoize the key check for performance
+  const xKey = useMemo(() => (data?.[0]?.time ? "time" : "date"), [data]);
 
   return (
-    <div className="w-full h-full min-h-[250px]">
+    <div className="w-full h-full min-h-[250px] outline-none select-none">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          onMouseMove={undefined} // ✅ add this
-          margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+          margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
+          {/* Subtle horizontal-only grid */}
           <CartesianGrid
             vertical={false}
             stroke="#f1f5f9"
-            strokeDasharray="3 3"
+            strokeDasharray="8 8"
           />
+
           <XAxis
             dataKey={xKey}
-            tick={{ fontSize: 10, fill: "#94a3b8" }}
+            tick={{ fontSize: 9, fontWeight: 700, fill: "#cbd5e1" }}
             axisLine={false}
             tickLine={false}
             dy={10}
+            minTickGap={30}
           />
+
           <YAxis
-            tick={{ fontSize: 10, fill: "#94a3b8" }}
+            tick={{ fontSize: 9, fontWeight: 700, fill: "#cbd5e1" }}
             axisLine={false}
             tickLine={false}
+            width={40}
+            orientation="left"
           />
-          {/* <Tooltip
-            contentStyle={{
-              borderRadius: "12px",
-              border: "none",
-              boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-              fontSize: "12px",
-            }}
-          /> */}
+
           <Tooltip
-            shared={false} // ✅ add this
-            isAnimationActive={false} // ✅ add this
-            cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }} // ✅ add this
             contentStyle={{
-              borderRadius: "12px",
-              border: "none",
-              boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-              fontSize: "12px",
+              backgroundColor: "rgba(255, 255, 255, 0.98)",
+              backdropFilter: "blur(8px)",
+              borderRadius: "16px",
+              border: "1px solid #f1f5f9",
+              boxShadow: "0 12px 24px -6px rgba(0,0,0,0.05)",
+              padding: "12px 16px",
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "#1e293b",
+            }}
+            itemStyle={{ padding: "2px 0" }}
+            cursor={{
+              stroke: "#e2e8f0",
+              strokeWidth: 2,
+              strokeDasharray: "4 4",
             }}
           />
+
           <Legend
             verticalAlign="top"
             align="right"
             iconType="circle"
+            iconSize={6}
             wrapperStyle={{
-              fontSize: "10px",
+              fontSize: "9px",
+              fontWeight: 900,
               textTransform: "uppercase",
-              letterSpacing: "0.05em",
-              paddingBottom: "20px",
+              letterSpacing: "0.15em",
+              paddingBottom: "30px",
+              color: "#94a3b8",
             }}
           />
+
           {lines.map((line, index) => (
             <Line
               key={line.dataKey}
               type="monotone"
               dataKey={line.dataKey}
-              strokeWidth={3}
-              dot={false}
-              activeDot={{ r: 4, strokeWidth: 0 }}
               stroke={line.stroke || (index === 0 ? "#0f172a" : "#3b82f6")}
+              strokeWidth={line.strokeWidth || 3}
+              dot={false}
+              activeDot={{
+                r: 5,
+                strokeWidth: 2,
+                stroke: "#fff",
+                fill: line.stroke,
+                shadow: "0 4px 10px rgba(0,0,0,0.1)",
+              }}
+              animationDuration={1500}
               name={line.name || line.dataKey}
             />
           ))}
+
+          {/* Cleaned up Brush for a modern feel */}
           <Brush
             dataKey={xKey}
-            height={20}
+            height={24}
             stroke="#e2e8f0"
-            fill="#fff"
-            travellerWidth={10}
-          />
+            fill="#ffffff"
+            gap={10}
+            travellerWidth={6}
+            padding={{ top: 20 }}
+          >
+            {/* Nested line chart inside brush for that "mini-map" look */}
+            <LineChart data={data}>
+              <Line
+                type="monotone"
+                dataKey={lines[0]?.dataKey}
+                stroke="#cbd5e1"
+                strokeWidth={1}
+                dot={false}
+              />
+            </LineChart>
+          </Brush>
         </LineChart>
       </ResponsiveContainer>
     </div>
