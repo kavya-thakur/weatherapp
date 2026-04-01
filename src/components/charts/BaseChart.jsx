@@ -1,104 +1,3 @@
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   Brush,
-//   ResponsiveContainer,
-//   Legend,
-//   CartesianGrid,
-// } from "recharts";
-
-// const BaseChart = ({ data, lines }) => {
-//   const xKey = data?.[0]?.time ? "time" : "date";
-
-//   return (
-//     <div className="w-full h-full min-h-[250px]">
-//       <ResponsiveContainer width="100%" height="100%">
-//         <LineChart
-//           data={data}
-//           margin={{ top: 10, right: 20, left: -10, bottom: 10 }}
-//         >
-//           <CartesianGrid
-//             vertical={false}
-//             stroke="#f1f5f9"
-//             strokeDasharray="3 3"
-//           />
-
-//           <XAxis
-//             dataKey={xKey}
-//             tick={{ fontSize: 10, fill: "#94a3b8" }}
-//             axisLine={false}
-//             tickLine={false}
-//             interval="preserveStartEnd"
-//             dy={10}
-//           />
-
-//           <YAxis
-//             tick={{ fontSize: 10, fill: "#94a3b8" }}
-//             axisLine={false}
-//             tickLine={false}
-//             width={35}
-//           />
-
-//           <Tooltip
-//             shared={false}
-//             isAnimationActive={false}
-//             cursor={{ stroke: "#cbd5e1", strokeWidth: 1 }}
-//             contentStyle={{
-//               borderRadius: "12px",
-//               border: "none",
-//               boxShadow: "0 10px 20px rgba(0,0,0,0.08)",
-//               fontSize: "12px",
-//             }}
-//           />
-
-//           <Legend
-//             verticalAlign="top"
-//             align="right"
-//             iconType="circle"
-//             wrapperStyle={{
-//               fontSize: "10px",
-//               textTransform: "uppercase",
-//               letterSpacing: "0.05em",
-//               paddingBottom: "20px",
-//             }}
-//           />
-
-//           {lines.map((line, index) => (
-//             <Line
-//               key={line.dataKey}
-//               type="monotone"
-//               dataKey={line.dataKey}
-//               strokeWidth={2.5}
-//               dot={false}
-//               activeDot={{
-//                 r: 4,
-//                 strokeWidth: 0,
-//                 fill: line.stroke,
-//               }}
-//               stroke={line.stroke || (index === 0 ? "#0f172a" : "#3b82f6")}
-//               name={line.name || line.dataKey}
-//             />
-//           ))}
-
-//           <Brush
-//             dataKey={xKey}
-//             height={28}
-//             stroke="#94a3b8"
-//             fill="#f8fafc"
-//             travellerWidth={12}
-//             tickFormatter={() => ""}
-//           />
-//         </LineChart>
-//       </ResponsiveContainer>
-//     </div>
-//   );
-// };
-
-// export default BaseChart;
-
 import React, { useMemo } from "react";
 import {
   LineChart,
@@ -113,12 +12,11 @@ import {
 } from "recharts";
 
 const BaseChart = ({ data, lines }) => {
-  // Memoize the key check for performance
   const xKey = useMemo(() => (data?.[0]?.time ? "time" : "date"), [data]);
 
   return (
-    <div className="w-full h-full min-h-[250px] outline-none select-none">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-full min-h-[250px] flex outline-none select-none">
+      <ResponsiveContainer width="100%" height={250}>
         <LineChart
           data={data}
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}

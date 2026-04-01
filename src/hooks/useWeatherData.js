@@ -25,6 +25,7 @@ export const useWeatherData = (coords, selectedDate) => {
         setLoading(true);
         setError(null);
 
+        console.time("weather-load"); // ✅ START
         const isToday = dayjs(selectedDate).isSame(dayjs(), "day");
         const isFuture = dayjs(selectedDate).isAfter(dayjs(), "day");
 
@@ -40,7 +41,7 @@ export const useWeatherData = (coords, selectedDate) => {
             : fetchWeatherByDate(lat, lon, selectedDate),
           fetchAirQuality(lat, lon),
         ]);
-
+        console.timeEnd("weather-load"); // ✅ END
         setData({ ...weatherRes, air: airRes });
       } catch (err) {
         setError("Failed to load weather data");

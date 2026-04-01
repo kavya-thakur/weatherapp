@@ -132,7 +132,6 @@ const ChartSection = ({ title, lines, data }) => (
       <div className="w-1.5 h-1.5 rounded-full bg-slate-100" />
     </div>
 
-    {/* Scrollable container to prevent chart distortion on high data points */}
     <div className="flex-grow w-full overflow-x-auto no-scrollbar">
       <div className="h-full" style={{ minWidth: `${data.length * 55}px` }}>
         <BaseChart data={data} lines={lines} />
