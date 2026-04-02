@@ -41,7 +41,7 @@ const Historical = ({ coords }) => {
     return <div className="p-10 text-red-500 font-semibold">{error}</div>;
 
   return (
-    <div className="max-w-[1400px] mx-auto px-4 md:px-8 space-y-12 pb-20">
+    <div className="max-w-[1400px] mx-auto md:px-8 space-y-12 pb-20">
       <HistoricalHeader
         startDate={startDate}
         endDate={endDate}
